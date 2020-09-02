@@ -2,13 +2,54 @@ import { NextFunction, Request, Response } from "express";
 import { v4 } from "uuid";
 import jwt from "jsonwebtoken";
 import logger from "./logger";
+import { AuthUser } from "../models/auth";
+import { CacheAccess } from "./cache-access";
 
 /**
  * Request authorizer. Authorize incoming request
  */
 export const requestAuth = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        next();
+        // check requested route is login
+        if (req.path.includes('login')) {
+            next();
+            return;
+        } else {
+            // check authorization header exist
+            if (!req.headers.authorization) {
+                res.status(401).send();
+                return;
+            }
+        }
+
+        const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY as string;
+
+        // fetch authorization scheme and token
+        const [scheme, token] = req.headers.authorization.split(' ');
+
+        if (scheme === 'Bearer') {
+
+            const cache = req.app.settings[process.env.GLOBAL_CACHE as string] as CacheAccess;
+
+            // check token is bad token
+            const badToken = await cache.get(token);
+            if (badToken) {
+                res.status(401).send();
+                return;
+            }
+
+            jwt.verify(token, JWT_SECRET_KEY, (err, authUser) => {
+                if (err) {
+                    res.status(401).json();
+                } else {
+                    res.locals.authUser = authUser as AuthUser;
+                    next();
+                }
+            })
+        } else {
+            res.status(401).send();
+        }
+
     } catch (err) {
         logger.error(err.message, {
             route: req.path,
@@ -27,7 +68,8 @@ export const manipulateJson = (req: Request, res: Response, next: NextFunction) 
 
     // intercept json
     const oldJson = res.json;
-    res.json = (data: any) => {;
+    res.json = (data: any) => {
+        ;
 
         // set function back to avoid the 'double-send'
         res.json = oldJson;

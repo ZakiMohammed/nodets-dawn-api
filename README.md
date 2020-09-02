@@ -42,6 +42,8 @@ npm i cors
 npm i winston
 npm i uuid
 npm i jsonwebtoken
+npm i cache-manager
+npm i cache-manager-fs
 ```
 
 #### Install Dev Dependencies 
@@ -56,6 +58,7 @@ npm i -D @types/cors
 npm i -D @types/compression
 npm i -D @types/uuid
 npm i -D @types/jsonwebtoken
+npm i -D @types/cache-manager
 ```
 The `-D` above is for dev-dependencies.
 

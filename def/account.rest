@@ -1,0 +1,24 @@
+#### Account API
+
+#### Login
+POST http://localhost:3000/api/accounts/login
+content-type: application/json
+
+{
+    "UserName": "admin",
+    "Password": "admin"
+}
+
+#### Logout
+POST http://localhost:3000/api/accounts/logout
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlck5hbWUiOiJhZG1pbiIsImlhdCI6MTU5OTA3MTI2OCwiZXhwIjoxNTk5MDczMDY4fQ.S5vSSo6PUqqx13SbNoh7GSm1CbWpERj161NtxIK97Zc
+
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlck5hbWUiOiJhZG1pbiIsImlhdCI6MTU5OTA3MTI2OCwiZXhwIjoxNTk5MDczMDY4fQ.S5vSSo6PUqqx13SbNoh7GSm1CbWpERj161NtxIK97Zc",
+    "exp": 1599073068
+}
+
+#### Authorized
+POST http://localhost:3000/api/accounts/authorized
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlck5hbWUiOiJhZG1pbiIsImlhdCI6MTU5OTA3MjY4NCwiZXhwIjoxNTk5MDc0NDg0fQ.pO02jKjbSbLPgKaE3YLQ97Q888MjPR1vzak8YBaNEUI

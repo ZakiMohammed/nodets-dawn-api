@@ -1,6 +1,16 @@
 import express, { Request, Response, Router, Application } from 'express';
 import { requestLogger, requestAuth, errorHandler } from './middleware';
 import { EmployeeController } from '../controllers/employee-controller';
+import { AccountController } from '../controllers/account-controller';
+
+const accountRoutes = (): Router => {
+    const router = express.Router();
+
+    router.post('/login', AccountController.login);
+    router.post('/logout', AccountController.logout);
+    router.post('/authorized', AccountController.authorized);
+    return router;
+};
 
 const employeeRoutes = (): Router => {
     const router = express.Router();
@@ -37,6 +47,7 @@ export const registerRoutes = (app: Application) => {
     app.use(requestAuth);
 
     // register routes
+    app.use('/api/accounts/', accountRoutes());
     app.use('/api/employees/', employeeRoutes());
 
     // missing routes

@@ -1,4 +1,4 @@
-describe('Auth Repository', () => {
+describe('Account Controller', () => {
     it('should initialize', () => {
         // should initialize
     });
