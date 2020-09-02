@@ -1,5 +1,5 @@
 import { DataAccess } from '../data/data-access';
-import { Employee, Summary, SummaryDetail, Status } from '../models/employee';
+import { Employee, Summary, SummaryJob, Status, SummaryDepartment } from '../models/employee';
 import { Table, VarChar, Int } from 'mssql';
 
 export class EmployeeRepository {
@@ -79,8 +79,8 @@ export class EmployeeRepository {
             const dataAccess = new DataAccess();
             const result = await dataAccess.execute(`GetSalarySummary`);
             const summary: Summary = {
-                Department: result.recordsets[0] as unknown as SummaryDetail,
-                Job: result.recordsets[1] as unknown as SummaryDetail,
+                Department: result.recordsets[0] as unknown as SummaryDepartment[],
+                Job: result.recordsets[1] as unknown as SummaryJob[],
             };
 
             return summary;

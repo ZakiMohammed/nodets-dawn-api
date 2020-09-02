@@ -8,12 +8,19 @@ export interface Employee {
 }
 
 export interface Summary {
-    Department: SummaryDetail;
-    Job: SummaryDetail;
+    Department: SummaryDepartment[];
+    Job: SummaryJob[];
 }
 
-export interface SummaryDetail {
+export interface SummaryJob {
     Job: string;
+    EmployeeCount: number;
+    Salary: number;
+    Annual: number;
+}
+
+export interface SummaryDepartment {
+    Department: string;
     EmployeeCount: number;
     Salary: number;
     Annual: number;
