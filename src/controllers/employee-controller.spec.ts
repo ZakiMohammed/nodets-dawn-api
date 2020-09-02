@@ -35,6 +35,10 @@ describe('Employee Controller', () => {
         next = jest.fn();
     });
 
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
     describe('GetEmployees', () => {
         it('should get employees', async () => {
             const result: Employee[] = MOCKS.EMPLOYEES;
