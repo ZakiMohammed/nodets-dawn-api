@@ -23,6 +23,8 @@ export class AccountController {
                 jwt.sign(authUser, JWT_SECRET_KEY, {
                     expiresIn: JWT_EXPIRES_IN
                 }, (err, token) => {
+                    // tslint:disable-next-line: no-console
+                    console.log(token);
                     if (err) {
                         throw err;
                     } else {
