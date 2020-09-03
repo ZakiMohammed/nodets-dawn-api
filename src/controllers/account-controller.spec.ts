@@ -4,28 +4,14 @@ import { User } from '../models/user';
 import { AccountController } from './account-controller';
 import jwt, { Secret, SignOptions, SignCallback } from "jsonwebtoken";
 
-jest.mock('jsonwebtoken', () => jest.fn());
+jest.mock('jsonwebtoken');
 
 describe('Account Controller', () => {
-    let mockJwt: jest.Mock;
-    let mockSign: any;
-    let spyAuthenticate: jest.SpyInstance;
     let request: any;
     let response: any;
     let next: any;
 
     beforeEach(() => {
-
-        mockJwt = (jwt as unknown as jest.Mock);
-        mockJwt.mockImplementation(() => ({
-            sign: (payload: string, secretOrPrivateKey: Secret, options: SignOptions, callback: SignCallback) => mockSign(payload, secretOrPrivateKey, options, callback)
-        }));
-        mockSign = (payload: string, secretOrPrivateKey: Secret, options: SignOptions, callback: SignCallback) => {
-            callback(null, 'token');
-        };
-
-        spyAuthenticate = jest.spyOn(UserRepository, 'authenticate');
-
         process.env = {
             GLOBAL_CACHE: 'CACHE_STORAGE',
             JWT_SECRET_KEY: 'JWT_SECRET_KEY',
@@ -66,7 +52,20 @@ describe('Account Controller', () => {
 
     describe('Login', () => {
 
+        let spyAuthenticate: jest.SpyInstance;
+        let spySign: jest.SpyInstance;
+
         beforeEach(() => {
+
+            spySign = jest.spyOn(jwt, 'sign');
+            spyAuthenticate = jest.spyOn(UserRepository, 'authenticate');
+
+            spySign.mockImplementation((
+                payload: string,
+                secretOrPrivateKey: Secret,
+                options: SignOptions,
+                callback: SignCallback) => callback(null, 'token'));
+
             request = {
                 body: {
                     UserName: 'admin',
@@ -75,7 +74,7 @@ describe('Account Controller', () => {
             };
         });
 
-        it('should login', async () => {
+        it('should login ', async () => {
             const user = MOCKS.USER;
             const result = { ...user };
 
@@ -107,9 +106,11 @@ describe('Account Controller', () => {
             const result = { ...user };
 
             spyAuthenticate.mockImplementation(() => Promise.resolve(result));
-            mockSign = (payload: string, secretOrPrivateKey: Secret, options: SignOptions, callback: SignCallback) => {
-                callback(new Error('Error occurred'), undefined);
-            };
+            spySign.mockImplementation((
+                payload: string,
+                secretOrPrivateKey: Secret,
+                options: SignOptions,
+                callback: SignCallback) => callback(new Error('Error occurred'), undefined));
 
             await AccountController.login(request, response, next);
 
